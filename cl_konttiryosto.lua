@@ -55,7 +55,7 @@ Citizen.CreateThread(function()
                     SetEntityHeading(door, d.Suunta)
                 end
             end
-            if GetDistanceBetweenCoords(coords, d.Koordinaatit, true) <= 2.0 and d.Kiinni and ESX.PlayerData.job.name == 'police' then
+            if GetDistanceBetweenCoords(coords, d.Koordinaatit, true) <= 2.0 and d.Kiinni and ESX.PlayerData.job.name ~= 'police' then
                 if tiirikka then
                     ESX.ShowHelpNotification('Paina ~INPUT_CONTEXT~ murtaaksesi oven')
                     if IsControlPressed(0, 38) then
@@ -75,7 +75,7 @@ Citizen.CreateThread(function()
                         end
                     end
                 end
-            elseif ESX.PlayerData.job.name ~= 'police' and not d.Kiinni and GetDistanceBetweenCoords(coords, d.Koordinaatit, true) <= 2.0 then
+            elseif ESX.PlayerData.job.name == 'police' and not d.Kiinni and GetDistanceBetweenCoords(coords, d.Koordinaatit, true) <= 2.0 then
                 ESX.ShowHelpNotification('Paina ~INPUT_CONTEXT~ korjataksesi oven')
                 if IsControlPressed(0, 38) then
                     TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
