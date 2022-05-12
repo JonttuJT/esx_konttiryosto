@@ -32,7 +32,7 @@ AddEventHandler('esx_konttiryosto:setFrozen', function(house, status)
 end)
 
 Citizen.CreateThread(function()
-    Wait(50)
+    Wait(0)
     for i = 1, #Config.Kontit do
         ESX.TriggerServerCallback('esx_konttiryosto:getDoorFreezeStatus', function(frozen)
             print(frozen)
@@ -92,7 +92,7 @@ Citizen.CreateThread(function()
                 end
             end
         end
-        Wait(50)
+        Wait(0)
     end
 end)
 
