@@ -129,5 +129,5 @@ end)
 
 RegisterNetEvent('esx_konttiryosto:onkotiirikka')
 AddEventHandler('esx_konttiryosto:onkotiirikka', function(onkovaiei)
-	onkotiirikka = onkovaiei
+	tiirikka = onkovaiei
 end)
