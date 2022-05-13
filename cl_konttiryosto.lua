@@ -63,11 +63,11 @@ Citizen.CreateThread(function()
                         ESX.ShowHelpNotification('Paina ~INPUT_CONTEXT~ murtaaksesi oven')
                         if IsControlPressed(0, 38) then
                             TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
-					        Citizen.Wait(1000)
+					        Citizen.Wait(15000)
 					        if IsPedUsingAnyScenario(PlayerPedId()) == false then
 						        TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
 					        end
-                            Citizen.Wait(1000)
+                            Citizen.Wait(15000)
 					        if IsPedUsingAnyScenario(PlayerPedId()) then
                                 ClearPedTasks(PlayerPedId())
                                 ESX.ShowNotification('~g~Onnistuit murrossa!')
