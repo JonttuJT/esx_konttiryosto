@@ -1,5 +1,18 @@
 ESX = nil
+
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+
+function distancecheck(source)
+    for k, v in pairs(Config.Kontit) do
+        for i = 1, #v.Kohdat do
+            local dist = #(GetEntityCoords(GetPlayerPed(source)) - v.Kohdat[i].Paikka)
+            if dist <= 1.5 then
+                return true
+            end
+        end
+    end
+    return false
+end
 
 ESX.RegisterServerCallback('esx_konttiryosto:getDoorFreezeStatus', function(source, cb, house)
     cb(Config.Kontit[house].Ovi.Kiinni)
@@ -20,7 +33,7 @@ AddEventHandler('esx_konttiryosto:setDoorFreezeStatus', function(house, status)
         if cops >= Config.Kontit[house].Poliisit then
             Config.Kontit[house].Ovi.Kiinni = status
         else
-            TriggerClientEvent('esx:showNotification', 'Kaupungissa pitää olla vähintään ~b~'..Config.Kontit[house].Poliisit..' poliisia~s~ !')
+            TriggerClientEvent('esx:showNotification', src, 'Kaupungissa pitää olla vähintään ~b~'..Config.Kontit[house].Poliisit..' poliisia~s~!')
         end
     else
         Config.Kontit[house].Ovi.Kiinni = status
@@ -31,6 +44,7 @@ end)
 RegisterServerEvent('esx_konttiryosto:loot')
 AddEventHandler('esx_konttiryosto:loot', function(house, furniture)
     local src = source
+    if not distancecheck(src) then TriggerClientEvent('esx:showNotification', src, 'lolz noobz') return end
     local cops = 0
     local xPlayers = ESX.GetPlayers()
     for i = 1, #xPlayers do
@@ -45,9 +59,9 @@ AddEventHandler('esx_konttiryosto:loot', function(house, furniture)
         local randomItem = math.random(1, #Config.Tavarat)
         local randomAmount = math.random(1, 3)
         xPlayer.addInventoryItem(Config.Tavarat[randomItem].Database, randomAmount)
-        TriggerClientEvent('esx:showNotification', 'Löysit x' .. randomAmount .. ' ' .. Config.Tavarat[randomItem].Nimi)
+        TriggerClientEvent('esx:showNotification', src, 'Löysit x' .. randomAmount .. ' ' .. Config.Tavarat[randomItem].Nimi)
     else
-        TriggerClientEvent('esx:showNotification', 'Kaupungissa pitää olla vähintään ~b~'..Config.Kontit[house].Poliisit..' poliisia~s~!')
+        TriggerClientEvent('esx:showNotification', src, 'Kaupungissa pitää olla vähintään ~b~'..Config.Kontit[house].Poliisit..' poliisia~s~!')
     end
 end)
 
