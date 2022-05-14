@@ -62,14 +62,14 @@ Citizen.CreateThread(function()
                     if tiirikka or GetSelectedPedWeapon(player) == GetHashKey("WEAPON_CROWBAR") then
                         ESX.ShowHelpNotification('Paina ~INPUT_CONTEXT~ murtaaksesi oven')
                         if IsControlPressed(0, 38) then
-                            TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
+                            TaskStartScenarioInPlace(player, "PROP_HUMAN_BUM_BIN", 0, true)
 					        Citizen.Wait(15000)
-					        if IsPedUsingAnyScenario(PlayerPedId()) == false then
-						        TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
+					        if IsPedUsingAnyScenario(player) == false then
+						        TaskStartScenarioInPlace(player, "PROP_HUMAN_BUM_BIN", 0, true)
 					        end
                             Citizen.Wait(15000)
-					        if IsPedUsingAnyScenario(PlayerPedId()) then
-                                ClearPedTasks(PlayerPedId())
+					        if IsPedUsingAnyScenario(player) then
+                                ClearPedTasks(player)
                                 ESX.ShowNotification('~g~Onnistuit murrossa!')
                                 TriggerServerEvent('esx_konttiryosto:setDoorFreezeStatus', i, false)
                                 TriggerServerEvent('esx_addons_gcphone:startCall', 'police', 'Konttimurto', coords, {
@@ -80,23 +80,25 @@ Citizen.CreateThread(function()
                             end
                         end
                     else
-                        Wait(1000)
+                        sleep = 2000
                     end
                 elseif not d.Kiinni and ESX.PlayerData.job.name == 'police' then
                     ESX.ShowHelpNotification('Paina ~INPUT_CONTEXT~ korjataksesi oven')
                     if IsControlPressed(0, 38) then
                         TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
 					    Citizen.Wait(15000)
-					    if IsPedUsingAnyScenario(PlayerPedId()) == false then
-						    TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
+					    if IsPedUsingAnyScenario(player) == false then
+						    TaskStartScenarioInPlace(player, "PROP_HUMAN_BUM_BIN", 0, true)
 					    end
                         Citizen.Wait(15000)
-					    if IsPedUsingAnyScenario(PlayerPedId()) then
-                            ClearPedTasks(PlayerPedId())
+					    if IsPedUsingAnyScenario(player) then
+                            ClearPedTasks(player)
                             ESX.ShowNotification('~g~Onnistuit!')
                             TriggerServerEvent('esx_konttiryosto:setDoorFreezeStatus', i, true)
                         end
                     end
+		else
+		    sleep = 2000
                 end
             end
         end
@@ -112,7 +114,7 @@ Citizen.CreateThread(function()
                 local player = PlayerPedId()
                 local coords = GetEntityCoords(player)
                 local dist = #(coords - v.Kohdat[i].Paikka)
-                if dist <= 10 then
+                if dist <= 5 then
                     sleep = 5
                 end
                 if not v.Ovi.Kiinni then
@@ -136,7 +138,7 @@ Citizen.CreateThread(function()
                         end
                     end
                 else
-                    Wait(1000)
+                    sleep = 2000
                 end
             end
         end
