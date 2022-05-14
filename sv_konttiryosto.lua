@@ -19,7 +19,7 @@ ESX.RegisterServerCallback('esx_konttiryosto:getDoorFreezeStatus', function(sour
 end)
 
 RegisterServerEvent('esx_konttiryosto:setDoorFreezeStatus')
-AddEventHandler('esx_konttiryosto:setDoorFreezeStatus', function(house, status)
+AddEventHandler('esx_konttiryosto:setDoorFreezeStatus', function(house, status, position)
     if status == false then
         local src = source
         local cops = 0
@@ -32,11 +32,30 @@ AddEventHandler('esx_konttiryosto:setDoorFreezeStatus', function(house, status)
         end
         if cops >= Config.Kontit[house].Poliisit then
             Config.Kontit[house].Ovi.Kiinni = status
+            if Config.BlipIlmoitus == true then
+                local xPlayers = ESX.GetPlayers()
+                for i=1, #xPlayers, 1 do
+                    local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
+                    if xPlayer.job.name == 'police' then
+                        TriggerClientEvent('esx:showNotification', xPlayers[i], 'Kontin murto käynnissä!')
+                        TriggerClientEvent('esx_konttiryosto:setBlip', xPlayers[i], position)
+                    end
+                end
+            end
         else
             TriggerClientEvent('esx:showNotification', src, 'Kaupungissa pitää olla vähintään ~b~'..Config.Kontit[house].Poliisit..' poliisia~s~!')
         end
     else
         Config.Kontit[house].Ovi.Kiinni = status
+        if Config.BlipIlmoitus == true then
+            local xPlayers = ESX.GetPlayers()
+            for i=1, #xPlayers, 1 do
+                local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
+                if xPlayer.job.name == 'police' then
+                    TriggerClientEvent('esx_konttiryosto:killBlip', xPlayers[i])
+                end
+            end
+        end
     end
     TriggerClientEvent('esx_konttiryosto:setFrozen', -1, house, Config.Kontit[house].Ovi.Kiinni)
 end)
