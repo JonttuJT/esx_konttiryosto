@@ -71,12 +71,12 @@ Citizen.CreateThread(function()
                     SetEntityHeading(door, d.Suunta)
                 end
             end
-            if tiirikka or GetSelectedPedWeapon(player) == GetHashKey("WEAPON_CROWBAR") then
-                if dist <= 10.0 then
-                    sleep = 0
-                end
-                if dist <= 2.0 then
-                    if d.Kiinni and ESX.PlayerData.job.name ~= 'police' then
+            if d.Kiinni and ESX.PlayerData.job.name ~= 'police' then
+                if tiirikka or GetSelectedPedWeapon(player) == GetHashKey("WEAPON_CROWBAR") then
+                    if dist <= 10.0 then
+                        sleep = 0
+                    end
+                    if dist <= 2.0 then
                         ESX.ShowHelpNotification('Paina ~INPUT_CONTEXT~ murtaaksesi oven')
                         if IsControlPressed(0, 38) then
                             TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
@@ -98,10 +98,15 @@ Citizen.CreateThread(function()
                                 ESX.ShowNotification('~r~Epäonnistuit murrossa!')
                             end
                         end
-                    else
-                        sleep = 2000
                     end
-                elseif not d.Kiinni and ESX.PlayerData.job.name == 'police' then
+                else
+                    sleep = 2000
+                end
+            elseif not d.Kiinni and ESX.PlayerData.job.name == 'police' then
+                if dist <= 10.0 then
+                    sleep = 0
+                end
+                if dist <= 2.0 then
                     ESX.ShowHelpNotification('Paina ~INPUT_CONTEXT~ korjataksesi oven')
                     if IsControlPressed(0, 38) then
                         TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
