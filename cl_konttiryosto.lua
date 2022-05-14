@@ -1,5 +1,6 @@
 ESX = nil
 local ESXLoaded = false
+local blipRobbery = nil
 
 Citizen.CreateThread(function ()
     while ESX == nil do
@@ -27,6 +28,22 @@ AddEventHandler('esx_konttiryosto:setFrozen', function(house, status)
     Config.Kontit[house].Ovi.Kiinni = status
     local door = GetClosestObjectOfType(Config.Kontit[house].Ovi.Koordinaatit, 2.0, GetHashKey(Config.Kontit[house].Ovi.Objekti), false, 0, 0)
     FreezeEntityPosition(door, status)
+end)
+
+RegisterNetEvent('esx_konttiryosto:killBlip')
+AddEventHandler('esx_konttiryosto:killBlip', function()
+	RemoveBlip(blipRobbery)
+end)
+
+RegisterNetEvent('esx_konttiryosto:setBlip')
+AddEventHandler('esx_konttiryosto:setBlip', function(position)
+	blipRobbery = AddBlipForCoord(position.x, position.y, position.z)
+
+	SetBlipSprite(blipRobbery, 161)
+	SetBlipScale(blipRobbery, 2.0)
+	SetBlipColour(blipRobbery, 3)
+
+	PulseBlip(blipRobbery)
 end)
 
 Citizen.CreateThread(function()
@@ -62,19 +79,21 @@ Citizen.CreateThread(function()
                     if tiirikka or GetSelectedPedWeapon(player) == GetHashKey("WEAPON_CROWBAR") then
                         ESX.ShowHelpNotification('Paina ~INPUT_CONTEXT~ murtaaksesi oven')
                         if IsControlPressed(0, 38) then
-                            TaskStartScenarioInPlace(player, "PROP_HUMAN_BUM_BIN", 0, true)
+                            TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
 					        Citizen.Wait(15000)
-					        if IsPedUsingAnyScenario(player) == false then
-						        TaskStartScenarioInPlace(player, "PROP_HUMAN_BUM_BIN", 0, true)
+					        if IsPedUsingAnyScenario(PlayerPedId()) == false then
+						        TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
 					        end
                             Citizen.Wait(15000)
-					        if IsPedUsingAnyScenario(player) then
-                                ClearPedTasks(player)
+					        if IsPedUsingAnyScenario(PlayerPedId()) then
+                                ClearPedTasks(PlayerPedId())
                                 ESX.ShowNotification('~g~Onnistuit murrossa!')
-                                TriggerServerEvent('esx_konttiryosto:setDoorFreezeStatus', i, false)
-                                TriggerServerEvent('esx_addons_gcphone:startCall', 'police', 'Konttimurto', coords, {
-                                    coords = { x = d.Koordinaatit.x, y = d.Koordinaatit.y, z = d.Koordinaatit.z },
-                                })
+                                TriggerServerEvent('esx_konttiryosto:setDoorFreezeStatus', i, false, d.Koordinaatit)
+                                if Config.BlipIlmoitus == false then
+                                    TriggerServerEvent('esx_addons_gcphone:startCall', 'police', 'Konttimurto', coords, {
+                                        coords = { x = d.Koordinaatit.x, y = d.Koordinaatit.y, z = d.Koordinaatit.z },
+                                    })
+                                end
                             else 
                                 ESX.ShowNotification('~r~Epäonnistuit murrossa!')
                             end
@@ -87,18 +106,18 @@ Citizen.CreateThread(function()
                     if IsControlPressed(0, 38) then
                         TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
 					    Citizen.Wait(15000)
-					    if IsPedUsingAnyScenario(player) == false then
-						    TaskStartScenarioInPlace(player, "PROP_HUMAN_BUM_BIN", 0, true)
+					    if IsPedUsingAnyScenario(PlayerPedId()) == false then
+						    TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
 					    end
                         Citizen.Wait(15000)
-					    if IsPedUsingAnyScenario(player) then
-                            ClearPedTasks(player)
+					    if IsPedUsingAnyScenario(PlayerPedId()) then
+                            ClearPedTasks(PlayerPedId())
                             ESX.ShowNotification('~g~Onnistuit!')
-                            TriggerServerEvent('esx_konttiryosto:setDoorFreezeStatus', i, true)
+                            TriggerServerEvent('esx_konttiryosto:setDoorFreezeStatus', i, true, d.Koordinaatit)
                         end
                     end
-		else
-		    sleep = 2000
+                else
+                    sleep = 2000
                 end
             end
         end
