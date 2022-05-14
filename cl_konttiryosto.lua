@@ -71,12 +71,12 @@ Citizen.CreateThread(function()
                     SetEntityHeading(door, d.Suunta)
                 end
             end
-            if dist <= 10.0 then
-                sleep = 5
-            end
-            if dist <= 2.0 then
-                if d.Kiinni and ESX.PlayerData.job.name ~= 'police' then
-                    if tiirikka or GetSelectedPedWeapon(player) == GetHashKey("WEAPON_CROWBAR") then
+            if tiirikka or GetSelectedPedWeapon(player) == GetHashKey("WEAPON_CROWBAR") then
+                if dist <= 10.0 then
+                    sleep = 0
+                end
+                if dist <= 2.0 then
+                    if d.Kiinni and ESX.PlayerData.job.name ~= 'police' then
                         ESX.ShowHelpNotification('Paina ~INPUT_CONTEXT~ murtaaksesi oven')
                         if IsControlPressed(0, 38) then
                             TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
@@ -116,9 +116,9 @@ Citizen.CreateThread(function()
                             TriggerServerEvent('esx_konttiryosto:setDoorFreezeStatus', i, true, d.Koordinaatit)
                         end
                     end
-                else
-                    sleep = 2000
                 end
+            else
+                sleep = 4000
             end
         end
         Wait(sleep)
@@ -134,7 +134,7 @@ Citizen.CreateThread(function()
                 local coords = GetEntityCoords(player)
                 local dist = #(coords - v.Kohdat[i].Paikka)
                 if dist <= 5 then
-                    sleep = 5
+                    sleep = 0
                 end
                 if not v.Ovi.Kiinni then
                     if dist <= 0.5 then
@@ -152,8 +152,10 @@ Citizen.CreateThread(function()
                                     ClearPedTasks(player)
                                     Wait(2500)
                                     FreezeEntityPosition(player, false)
-                                end   
+                                end
                             end
+                        else
+                            sleep = 2000
                         end
                     end
                 else
