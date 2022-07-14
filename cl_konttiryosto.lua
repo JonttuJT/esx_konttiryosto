@@ -163,8 +163,6 @@ Citizen.CreateThread(function()
                             sleep = 2000
                         end
                     end
-                else
-                    sleep = 2000
                 end
             end
         end
